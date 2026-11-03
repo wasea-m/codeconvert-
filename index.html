@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeConvert | Text to C++</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Arial,sans-serif;
+ background:#101827;color:#f1f5f9;
+}
+header{
+ padding:22px;background:#17243a;
+ border-bottom:1px solid #334155;
+ display:flex;justify-content:space-between;align-items:center;
+}
+.logo{font-size:23px;font-weight:bold;color:#60a5fa}
+main{max-width:850px;margin:30px auto;padding:16px}
+.card{
+ background:#1e293b;padding:22px;border-radius:16px;
+ margin-bottom:18px;border:1px solid #334155;
+}
+h1{font-size:27px}
+p{color:#cbd5e1;line-height:1.6}
+input,textarea{
+ width:100%;padding:14px;margin:8px 0 15px;
+ border-radius:9px;border:1px solid #475569;
+ background:#0f172a;color:white;font-size:15px;
+}
+button{
+ background:#2563eb;color:white;border:0;
+ border-radius:9px;padding:13px 18px;
+ font-weight:bold;cursor:pointer;margin:4px 0;
+}
+button:hover{background:#1d4ed8}
+pre{
+ background:#0b1220;color:#86efac;padding:16px;
+ border-radius:10px;overflow:auto;white-space:pre-wrap;
+ font-size:13px;line-height:1.6;
+}
+.small{font-size:12px;color:#94a3b8}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">&lt;/&gt; CodeConvert</div>
+ <span>Student Workspace</span>
+</header>
+
+<main>
+ <section class="card" id="login">
+  <h1>Welcome to CodeConvert 👋</h1>
+  <p>Your text-to-C++ coding assistant.</p>
+  <label>Your name</label>
+  <input id="username" placeholder="Enter your name">
+  <button onclick="login()">Get Started →</button>
+  <p class="small">Demo login. No account is created.</p>
+ </section>
+
+ <section id="dashboard" class="hidden">
+  <div class="card">
+   <h1>Hello, <span id="welcome"></span>! 👋</h1>
+   <p>Welcome to your programming dashboard.</p>
+   <p>Conversions: <b id="count">0</b></p>
+  </div>
+
+  <div class="card">
+   <h2>✦ Text to C++ Converter</h2>
+   <p>Describe the program you want to create.</p>
+   <textarea id="request" rows="4"
+   placeholder="Example: Write a program to add two numbers."></textarea>
+   <button onclick="convert()">Convert to C++</button>
+   <div id="result" class="hidden">
+    <h3>Your C++ code</h3>
+    <pre id="code"></pre>
+    <button onclick="copyCode()">Copy code</button>
+    <button onclick="downloadCode()">Download .cpp</button>
+   </div>
+   <p id="message" class="small"></p>
+  </div>
+
+  <div class="card">
+   <h2>📚 C++ Quick Guide</h2>
+   <p><b>#include &lt;iostream&gt;</b> — Input and output library.</p>
+   <p><b>int main()</b> — Starting point of a program.</p>
+   <p><b>cout</b> — Displays information.</p>
+   <p><b>cin</b> — Takes user input.</p>
+   <p><b>return 0;</b> — Ends the program.</p>
+  </div>
+
+  <button onclick="logout()">Sign out</button>
+ </section>
+ <p class="small" style="text-align:center">
+  CodeConvert © 2026 | Made for beginner programmers
+ </p>
+</main>
+
+<script>
+let conversions=0;
+let currentCode="";
+
+function login(){
+ let name=document.getElementById("username").value.trim();
+ if(!name){alert("Please enter your name.");return;}
+ document.getElementById("welcome").textContent=name;
+ document.getElementById("login").classList.add("hidden");
+ document.getElementById("dashboard").classList.remove("hidden");
+}
+
+function convert(){
+ let text=document.getElementById("request").value.toLowerCase();
+ let code="";
+
+ if(!text.trim()){
+  alert("Please describe your program.");
+  return;
+ }
+
+ if(text.includes("add")||text.includes("sum")){
+ code=`#include <iostream>
+using namespace std;
+
+int main()
+{
+    int a, b;
+    cout << "Enter two numbers: ";
+    cin >> a >> b;
+
+    cout << "Sum = " << a + b << endl;
+    return 0;
+}`;
+ }
+ else if(text.includes("even")||text.includes("odd")){
+ code=`#include <iostream>
+using namespace std;
+
+int main()
+{
+    int number;
+    cout << "Enter a number: ";
+    cin >> number;
+
+    if(number % 2 == 0)
+        cout << "Even number";
+    else
+        cout << "Odd number";
+
+    return 0;
+}`;
+ }
+ else if(text.includes("rectangle")){
+ code=`#include <iostream>
+using namespace std;
+
+int main()
+{
+    float length, width;
+    cout << "Enter length: ";
+    cin >> length;
+    cout << "Enter width: ";
+    cin >> width;
+
+    cout << "Area = " << length * width;
+    return 0;
+}`;
+ }
+ else if(text.includes("subtract")){
+ code=`#include <iostream>
+using namespace std;
+
+int main()
+{
+    int a, b;
+    cin >> a >> b;
+    cout << "Difference = " << a-b;
+    return 0;
+}`;
+ }
+ else{
+ code=`#include <iostream>
+using namespace std;
+
+int main()
+{
+    // Write your program logic here
+    cout << "Hello World!";
+    return 0;
+}`;
+ }
+
+ currentCode=code;
+ conversions++;
+ document.getElementById("count").textContent=conversions;
+ document.getElementById("code").textContent=code;
+ document.getElementById("result").classList.remove("hidden");
+ document.getElementById("message").textContent=
+ "Starter code generated. Review it before using Dev-C++.";
+}
+
+function copyCode(){
+ if(!currentCode)return;
+ navigator.clipboard.writeText(currentCode)
+ .then(()=>alert("Code copied!"))
+ .catch(()=>alert("Please select and copy the code manually."));
+}
+
+function downloadCode(){
+ let file=new Blob([currentCode],{type:"text/plain"});
+ let link=document.createElement("a");
+ link.href=URL.createObjectURL(file);
+ link.download="program.cpp";
+ link.click();
+ URL.revokeObjectURL(link.href);
+}
+
+function logout(){
+ document.getElementById("dashboard").classList.add("hidden");
+ document.getElementById("login").classList.remove("hidden");
+}
+</script>
+</body>
+</html>
